@@ -1,0 +1,11 @@
+docker-compose -f docker-compose.dev.yml up
+REDIS_URL=redis://localhost:6379 MONGO_URL=mongodb://the_username:the_password@localhost:3456/the_database npm run dev
+docker exec -it todo-backend-redis-1 bash
+redis-cli
+KEYS *
+GET counter
+set counter 9001
+DEL counter
+GET counter
+exit
+exit

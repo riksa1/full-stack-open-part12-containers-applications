@@ -1,0 +1,51 @@
+services:
+  app:
+    image: client
+    build:
+      context: ./Client
+      dockerfile: Dockerfile
+    volumes:
+      - ./Client:/usr/src/app
+    ports:
+      - 8000:80
+    container_name: client
+    environment:
+      - REACT_APP_BACKEND_URL=http://localhost:3001
+  backend:
+    container_name: server
+    image: server
+    build:
+      context: ./Server
+      dockerfile: Dockerfile
+    volumes:
+      - ./Server:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - 3001:3001
+    environment: 
+      - MONGODB_URI=mongodb://the_username:the_password@mongo:27017/the_database
+      - PORT=3001
+      - SECRET=SOME_SECRET_KEY
+  mongo:
+    image: mongo
+    ports:
+     - 3456:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_DATABASE: the_database
+    volumes:
+      - ./Server/mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
+      - ./Server/mongo_data:/data/db
+  nginx:
+    image: nginx:1.20.1
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - 8080:80
+    container_name: reverse-proxy
+    depends_on:
+      - app
+  
+volumes:
+  mongo_data:

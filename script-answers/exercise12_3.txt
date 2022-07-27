@@ -1,0 +1,8 @@
+docker container ls -a
+docker start -i happy_keller
+apt-get update
+apt-get -y install nano
+nano /usr/src/app/index.js
+console.log('Hello World')
+CTRL X + Y + Enter
+exit
